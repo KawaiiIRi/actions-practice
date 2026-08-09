@@ -1,0 +1,8 @@
+name: Test1
+on: push
+jobs:
+  testjob:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "I wanna be good at CI/CD using by GithubActions."
+      - uses: actions/checkout@v4
