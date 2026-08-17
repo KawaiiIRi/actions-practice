@@ -1,8 +1,14 @@
-name: Test1
-on: push
+name: Test
+on:
+  workflow_dispatch:
+    inputs:
+      greeting:
+        type: string
+          default: Hello
+          required: true
+          description: A cheerful word
 jobs:
-  testjob:
+  run:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "I wanna be good at CI/CD using by GithubActions."
-      - uses: actions/checkout@v4
+      - run: echo "${{ inputs.greeting }}"
