@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
-
-# Publish one workflow file on the main branch without including other changes.
+#新規にファイルを更新対象に入れたい場合、以下を実行する。(このシェルスクリプトを編集した場合も同様)
+#git status` | 変更・追加・削除されたファイルの状態を確認する。 |
+#git diff test1.yml` | `test1.yml`で何を変更したか、Gitへ登録する前に確認する。 |
+#git add publish-workflow.sh test1.yml` | この2ファイルを「次のコミットに含める対象」として選択する。まだGitHubへは送られない。 |
+#git diff --cached --name-only` | `git add`で選んだファイルが想定どおりか確認する。内容ではなくファイル名だけを表示する。 |
+#git commit -m "Add workflow publishing script"` | 選択した変更をローカルGitの履歴として確定する。`-m`はコミット内容の説明文。 |
+#git pull --rebase origin main` | GitHub上の`main`に自分のPCにない更新があれば、先に取り込む。自分のコミットをその更新の後ろに並べ直す。 |
+#git push origin main` | ローカルで確定したコミットを、GitHubの`main`ブランチへ送信する。 |
+#Publish one workflow file on the main branch without including other changes.
 set -euo pipefail
 
 readonly REMOTE_NAME="origin"
