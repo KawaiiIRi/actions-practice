@@ -1,9 +1,9 @@
-name: Intermeditate environment variables
+name: Variables
 on: push
 jobs:
   print:
     runs-on: ubuntu-latest
     env:
-     ACTOR: ${{github.actor}}
+      USERNAME: "${{ vars.USERNAME }}"
     steps:
-      - run: echo"${ACTOR}"
+      - run: echo "${USERNAME}"
