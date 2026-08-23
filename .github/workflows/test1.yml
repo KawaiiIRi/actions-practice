@@ -1,10 +1,13 @@
-name: Secrets
+name: Literals
 on: push
 jobs:
   print:
     runs-on: ubuntu-latest
-    env:
-      PASSWORD: "${{ vars.PASSWORD }}"
     steps:
-      - run: echo "${PASSWORD}"
-      - run: echo "${PASSWORD:0:1} ${PASSWORD#?}"
+      - run: printenv | grep 'LITERAL_'
+        env:
+          LITERAL_NULL: ${{null}}
+          LITERAL_BOOLEAN: ${{true}}
+          LITERAL_NUMBER: ${{1234}}
+          LITERAL_STRING: ${{'Cho'}}
+          LITERAL_OMIT_STRING: Iku
