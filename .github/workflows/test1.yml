@@ -1,14 +1,12 @@
-name: Test
-on:
-  workflow_dispatch:
-    inputs:
-      greeting:
-        type: string
-        default: Hello
-        required: true
-        description: A cheerful word
+name: Override environment variables
+on: push
+env:
+    EXAMPLE: Defined by by workflow
 jobs:
-  run:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "${{ inputs.greeting }}"
+  print:
+      runs-on:  ubuntu-latest
+      steps:
+        - run: echo "${EXAMPLE}"
+        - env:
+            EXAMPLE: Defined by step level
+          run: echo "${EXAMPLE}"
