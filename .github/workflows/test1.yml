@@ -1,9 +1,9 @@
 name: Intermeditate environment variables
 on: push
 jobs:
-    print:
-      runs-on: ubuntu-latest
-      env:
-        ACTOR: ${{github.actor}}
-      steps:
-        - run: echo"${ACTOR}"
+  print:
+    runs-on: ubuntu-latest
+    env:
+     ACTOR: ${{github.actor}}
+    steps:
+      - run: echo"${ACTOR}"
