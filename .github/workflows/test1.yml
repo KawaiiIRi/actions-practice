@@ -1,8 +1,8 @@
-name: Conditions
+name: Conditions Workflow
 on: push
 jobs:
   skip-or-run:
+    if: ${{ github.action == 'octocat' }}
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Hello"
-        if: ${{contains(github.run_id, '1')}}
+      - run: "Choiku!!!!"
