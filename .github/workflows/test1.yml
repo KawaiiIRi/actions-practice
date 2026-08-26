@@ -1,8 +1,13 @@
-name: GITHUB_ENV
-on: push
+name: Comment
+on: pull_request
 jobs:
-  share:
+  comment:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
     steps:
-      - run: echo "RESULT=hello" >> "${GITHUB_ENV}"
-      - run: echo "${RESULT}"
+      - uses: actions/checkout@4
+      - run: gh pr comment "${GITHUB_HEAD_REF}" --body "EIKUNO, ${GITHUB_ACTOR}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
