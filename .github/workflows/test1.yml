@@ -2,7 +2,7 @@ name: Conditions Workflow
 on: push
 jobs:
   skip-or-run:
-    if: ${{ github.action == 'octocat' && 'KawaiiIRi' }}
+    if: ${{ github.action == 'octocat' || 'KawaiiIRi' }}
     runs-on: ubuntu-latest
     steps:
       - run: "Choiku!!!!"
