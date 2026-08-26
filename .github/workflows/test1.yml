@@ -5,4 +5,4 @@ jobs:
     if: ${{ github.action == 'octocat' || 'KawaiiIRi' }}
     runs-on: ubuntu-latest
     steps:
-      - run: "Choiku!!!!"
+      - run: "Choiku"
