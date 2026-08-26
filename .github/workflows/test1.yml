@@ -1,13 +1,11 @@
-name: Literals
+name: Compare Functions
 on: push
 jobs:
-  print:
+  compare:
     runs-on: ubuntu-latest
     steps:
-      - run: printenv | grep 'LITERAL_'
+      - run: printenv | grep '_FUNC'
         env:
-          LITERAL_NULL: ${{null}}
-          LITERAL_BOOLEAN: ${{true}}
-          LITERAL_NUMBER: ${{1234}}
-          LITERAL_STRING: ${{'Cho'}}
-          LITERAL_OMIT_STRING: Iku
+          CONTAINS_FUNC: ${{contains('Hello', 'ell')}}
+          STARTS_WITH_FUNC: ${{startsWith('Hello', 'He')}}
+          ENDS_WITH_FUNC: ${{endsWith('Hello', 'lo')}}
