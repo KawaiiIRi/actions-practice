@@ -1,10 +1,9 @@
-name: Generate Functions
+name: JSON Functions
 on: push
 jobs:
-  compare:
+  dump:
     runs-on: ubuntu-latest
     steps:
-      - run: printenv | grep '_FUNC'
+      - run: echo "${CONTEXT}"
         env:
-          FORMAT_FUNC: ${{format('{0}, {1}.', 'Hi', 'world') }}
-          JOIN_FUNC: ${{join(github.event.*.html_url, ', ')}}
+          CONTEXT: ${{ toJson(github) }}
