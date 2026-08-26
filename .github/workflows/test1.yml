@@ -1,8 +1,9 @@
-name: Conditions Workflow
+name: Naming
 on: push
 jobs:
-  skip-or-run:
-    if: ${{ github.action == 'octocat' || 'KawaiiIRi' }}
+  print:
+    name: Super Useful Job
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Choiku"
+      - name: Amazing Script
+        run: echo "ChoGachiiku"
