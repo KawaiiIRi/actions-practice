@@ -1,16 +1,8 @@
-#GITHUB_OUTPUTが示す特別なファイルへ、result=Helloを書き込む。
-#GitHub Actionsが、それをsourceステップのresult出力として登録する。
-#次のステップで、その出力を環境変数RESULTに設定する。
-#echo "${RESULT}"でHelloを表示する。
-
-name: GITHUB_OUTPUT
+name: GITHUB_ENV
 on: push
 jobs:
   share:
     runs-on: ubuntu-latest
     steps:
-      - id: source
-        run: echo "result=Hello" >> "${GITHUB_OUTPUT}"
-      - env:
-          RESULT: ${{ steps.source.outputs.result }}
-        run: echo ${RESULT}
+      - run: echo "RESULT=hello" >> "${GITHUB_ENV}"
+      - run: echo "${RESULT}"
