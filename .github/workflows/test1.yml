@@ -1,4 +1,4 @@
-name: Compare Functions
+name: Generate Functions
 on: push
 jobs:
   compare:
@@ -6,6 +6,5 @@ jobs:
     steps:
       - run: printenv | grep '_FUNC'
         env:
-          CONTAINS_FUNC: ${{contains('Hello', 'ell')}}
-          STARTS_WITH_FUNC: ${{startsWith('Hello', 'He')}}
-          ENDS_WITH_FUNC: ${{endsWith('Hello', 'lo')}}
+          FORMAT_FUNC: ${{format('{0}, {1}.', 'Hi', 'world') }}
+          JOIN_FUNC: ${{join(github.event.*.html_url, ', ')}}
