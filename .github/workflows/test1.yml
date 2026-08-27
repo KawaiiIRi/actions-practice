@@ -1,13 +1,13 @@
-name: Comment
-on: pull_request
+name: Test
+on:
+  pull_request:
+    paths: ['go/**/*.go']
 jobs:
-  comment:
+  test:
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      contents: read
     steps:
-      - uses: actions/checkout@4
-      - run: gh pr comment "${GITHUB_HEAD_REF}" --body "EIKUNO, ${GITHUB_ACTOR}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+      - run: go test go/excellent/*.go
