@@ -1,11 +1,14 @@
-name: Multi-dimension matrix
+name: Manual matrix
 on: push
 jobs:
   print:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest,macos-latest]
-        version: [18,20]
+        include:
+          - os: ubuntu-latest
+            version: 20
+          - os: macos-latest
+            version: 18
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/setup-node@v4
