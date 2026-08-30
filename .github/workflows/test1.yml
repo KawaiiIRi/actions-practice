@@ -1,17 +1,19 @@
-name: Manual matrix
-on: push
+name: Environments
+on:
+  workflow_dispatch:
+    inputs:
+      environment-name:
+        type: environment
+        default: test
+        required: false
+        description: Environment name
 jobs:
   print:
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            version: 20
-          - os: macos-latest
-            version: 18
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment-name }}
+    env:
+      USERNAME: ${{ vars.USERNAME }}
+      PASSWORD: ${{ vars.PASSWORD }}
     steps:
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.version }}
-      - run: echo "${RUNNER_OS}" && node --version
+      - run: echo "${USERNAME}"
+      - run: echo "${PASSWORD:0:1} ${PASSWORD#?}"
