@@ -1,34 +1,8 @@
-#ワークフローYAMLを変更
-#  → Pull Requestを作成・更新
-#  → Ubuntuを起動
-#  → リポジトリを取得
-#  → Docker内でactionlintを実行
-#  → YAMLに問題があればActionsを失敗させる
-name: Static analysis
-
-on:
-  pull_request:
-    paths:
-      - '.github/workflows/*.yml'
-      - '.github/workflows/*.yaml'
-
-defaults:
-  run:
-    shell: bash
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
+name: Timeout
+on: push
 jobs:
-  lint:
+  sleep:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 1
     steps:
-      - uses: actions/checkout@v4
-
-      - run: |
-          docker run --rm \
-            -v "${PWD}:/repo" \
-            -w /repo \
-            rhysd/actionlint:latest
+      - run: sleep 120
