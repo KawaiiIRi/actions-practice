@@ -1,6 +1,8 @@
-name: Concurrency
-on: push
-concurrency: ${{ github.workflow }}
+name: Auto cancel
+on: pull_request
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   sleep:
     runs-on: ubuntu-latest
