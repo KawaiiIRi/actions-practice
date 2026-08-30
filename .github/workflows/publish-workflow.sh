@@ -1,17 +1,15 @@
 #!/usr/bin/env bash
-#新規にファイルを更新対象に入れたい場合、以下を実行する。(このシェルスクリプトを編集した場合も同様)
-#git status` | 変更・追加・削除されたファイルの状態を確認する。 |
-#git diff test1.yml` | `test1.yml`で何を変更したか、Gitへ登録する前に確認する。 |
-#git add publish-workflow.sh test1.yml` | この2ファイルを「次のコミットに含める対象」として選択する。まだGitHubへは送られない。 |
-#git diff --cached --name-only` | `git add`で選んだファイルが想定どおりか確認する。内容ではなくファイル名だけを表示する。 |
-#git commit -m "Add workflow publishing script"` | 選択した変更をローカルGitの履歴として確定する。`-m`はコミット内容の説明文。 |
-#git pull --rebase origin main` | GitHub上の`main`に自分のPCにない更新があれば、先に取り込む。自分のコミットをその更新の後ろに並べ直す。 |
-#git push origin main` | ローカルで確定したコミットを、GitHubの`main`ブランチへ送信する。 |
-#Publish one workflow file on the main branch without including other changes.
+# このスクリプト自体を変更した場合は、初回だけ手動でコミットして現在ブランチへpushする。
+# git status
+# git add publish-workflow.sh test1.yml
+# git diff --cached --name-only
+# git commit -m "Update workflow publishing script"
+# git pull --rebase
+# git push
+# Publish one workflow file to the currently checked-out branch.
 set -euo pipefail
 
 readonly REMOTE_NAME="origin"
-readonly TARGET_BRANCH="main"
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)" || exit 1
 REPOSITORY_ROOT="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel)" || exit 1
 readonly SCRIPT_DIR
@@ -58,13 +56,18 @@ resolve_workflow_file() {
 }
 
 validate_repository_state() {
+  git -C "$REPOSITORY_ROOT" remote get-url "$REMOTE_NAME" >/dev/null || \
+    die "Remote '$REMOTE_NAME' is not configured."
+}
+
+get_current_branch() {
   local current_branch
   current_branch="$(git -C "$REPOSITORY_ROOT" branch --show-current)"
 
-  [[ "$current_branch" == "$TARGET_BRANCH" ]] || \
-    die "Current branch is '$current_branch'. Switch to $TARGET_BRANCH before running this script."
-  git -C "$REPOSITORY_ROOT" remote get-url "$REMOTE_NAME" >/dev/null || \
-    die "Remote '$REMOTE_NAME' is not configured."
+  [[ -n "$current_branch" ]] || \
+    die "Cannot publish while HEAD is detached. Check out a branch first."
+
+  printf '%s\n' "$current_branch"
 }
 
 assert_only_target_is_changed() {
@@ -100,9 +103,27 @@ show_target_diff() {
   fi
 }
 
+has_upstream_branch() {
+  git -C "$REPOSITORY_ROOT" rev-parse \
+    --abbrev-ref --symbolic-full-name '@{upstream}' >/dev/null 2>&1
+}
+
+sync_and_push_current_branch() {
+  local current_branch="$1"
+
+  if has_upstream_branch; then
+    git -C "$REPOSITORY_ROOT" pull --rebase
+    git -C "$REPOSITORY_ROOT" push
+  else
+    git -C "$REPOSITORY_ROOT" push \
+      --set-upstream "$REMOTE_NAME" "$current_branch"
+  fi
+}
+
 commit_and_push() {
   local target_path="$1"
   local commit_message="$2"
+  local current_branch="$3"
 
   git -C "$REPOSITORY_ROOT" add -- "$target_path"
 
@@ -112,9 +133,8 @@ commit_and_push() {
   fi
 
   git -C "$REPOSITORY_ROOT" commit -m "$commit_message" -- "$target_path"
-  git -C "$REPOSITORY_ROOT" pull --rebase "$REMOTE_NAME" "$TARGET_BRANCH"
-  git -C "$REPOSITORY_ROOT" push "$REMOTE_NAME" "$TARGET_BRANCH"
-  echo "Published: $target_path"
+  sync_and_push_current_branch "$current_branch"
+  echo "Published to $current_branch: $target_path"
 }
 
 main() {
@@ -127,18 +147,21 @@ main() {
   local target_file
   local target_path
   local commit_message
+  local current_branch
 
   validate_script_location
   target_file="$(resolve_workflow_file "$workflow_file_path")"
   target_path="${target_file#"$REPOSITORY_ROOT/"}"
   commit_message="${2:-$(date +'%Y%m%d%H%M')commit: Update $(basename -- "$target_file")}"
   validate_repository_state
+  current_branch="$(get_current_branch)"
 
+  echo "== current branch: $current_branch =="
   echo "== git status =="
   git -C "$REPOSITORY_ROOT" status --short
   assert_only_target_is_changed "$target_path"
   show_target_diff "$target_path" "$target_file"
-  commit_and_push "$target_path" "$commit_message"
+  commit_and_push "$target_path" "$commit_message" "$current_branch"
 }
 
 main "$@"
