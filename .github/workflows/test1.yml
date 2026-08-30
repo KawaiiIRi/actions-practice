@@ -1,7 +1,10 @@
-name: Debug log
+name: Bash tracing
 on: push
 jobs:
   log:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "::debug::This is a debug log"
+      - run:  |
+          set -x
+          date
+          hostname
