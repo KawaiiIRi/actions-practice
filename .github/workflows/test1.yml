@@ -1,10 +1,10 @@
-name: Log group
+name: Add mask
 on: push
 jobs:
   log:
     runs-on: ubuntu-latest
+    env:
+      PASSWORD: SuperSecretValue
     steps:
-      - run:  |
-          echo "::group::Show environment variables"
-          printenv
-          echo "::endgroup::"
+      - run: echo "::add-mask::${PASSWORD}"
+      - run: echo "${PASSWORD}"
