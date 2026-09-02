@@ -1,0 +1,6 @@
+version: 2
+updates:
+  - packeage-ecosystem: github-actions
+    directory: /
+    schedule: 
+      interval: daily
