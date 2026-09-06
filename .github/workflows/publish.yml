@@ -11,7 +11,7 @@ on:
       version:
         type: string
         required: true
-        description: Version (ex: 1.2.3)
+        description: Version #(ex: 1.2.3)
 
 env:
   IMAGE_NAME: gha-image
